@@ -5,7 +5,7 @@ import { MdLogout } from "react-icons/md";
 import { TbView360 } from "react-icons/tb";
 
 
-function sudarshan() {
+function NavBar() {
     return (
         <div className="h-screen shadow-lg w-2/12 text-sm pt-6 bg-gray-100 ">
             <img src="../public/logo.png" alt="Logo" />
@@ -35,4 +35,4 @@ function sudarshan() {
     )
 }
 
-export default sudarshan
+export default NavBar
