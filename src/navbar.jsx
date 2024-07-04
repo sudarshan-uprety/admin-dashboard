@@ -13,7 +13,7 @@ function NavBar() {
           <ul className="grid gap-12 p-4">
             <p className="flex items-center gap-2">
               <TbView360 />
-              Overview
+              Overviews
             </p>
             <p className="flex items-center gap-2">
               <AiFillProduct />
