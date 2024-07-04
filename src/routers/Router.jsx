@@ -15,14 +15,14 @@ const router = createBrowserRouter([
     path: "about",
     element: (
       <div>
-        <h1>HELLO From about</h1>
+        <h1></h1>
         <NavBar />
       </div>
     ),
     children: [
       {
         path: "test",
-        element: <h1>HEY</h1>,
+        element: <h1></h1>,
       },
     ],
   },
