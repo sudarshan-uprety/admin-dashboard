@@ -1,6 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import NavBar from "../Navbar";
+import Register from "../auth/register";
+import NavBar from "../NavBar";
+import Login from '../auth/login';
+import VerifyUser from "../auth/verify";
 
 const router = createBrowserRouter([
   {
@@ -15,17 +18,41 @@ const router = createBrowserRouter([
     path: "about",
     element: (
       <div>
-        <h1>HELLO From about</h1>
+        <h1></h1>
         <NavBar />
       </div>
     ),
     children: [
       {
         path: "test",
-        element: <h1>HEY</h1>,
+        element: <h1></h1>,
       },
     ],
   },
+  {
+    path: "/register",
+    element: (
+      <div>
+        <Register />
+      </div>
+    )
+  },
+  {
+  path: "/login",
+  element: (
+    <div>
+      <Login />
+    </div>
+  )
+  },
+  {
+  path: "/verify/account",
+  element: (
+    <div>
+      <VerifyUser />
+    </div>
+  )
+}
 ]);
 
 export default router;
