@@ -1,15 +1,20 @@
 import { registerAPI } from "../API";
+import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 
 
 function Register() {
-    const handleSubmit = async (event) =>{
-        event.preventDefault()
-        const formData = new FormData(event.target)
-        console.log(formData)
-        const data = await registerAPI(formData)
-        console.log(data);
-    }
+  const navigate = useNavigate()
+  const handleSubmit = async (event) =>{
+      event.preventDefault()
+      const formData = new FormData(event.target)
+      const data = await registerAPI(formData)
+      if (data.status === 200) {
+        navigate("/verify/account")
+
+      }
+
+  }
   return (
     <div className="w-screen h-screen grid place-items-center ">
       <div className="px-8 py-8 border-solid rounded-lg shadow-2xl">
