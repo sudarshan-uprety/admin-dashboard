@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Register from "../auth/register";
 import NavBar from "../NavBar";
+import Login from '../auth/login';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,14 @@ const router = createBrowserRouter([
     element: (
       <div>
         <Register />
+      </div>
+    )
+  },
+    {
+    path: "/login",
+    element: (
+      <div>
+        <Login />
       </div>
     )
   }
