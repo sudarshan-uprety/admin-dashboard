@@ -9,7 +9,7 @@ function Login() {
     const formData = new FormData(event.target)
     const data = await loginAPI(formData)
     if (data.status === 200){
-      navigate("/register")
+      navigate("/")
     }
 }
   return (

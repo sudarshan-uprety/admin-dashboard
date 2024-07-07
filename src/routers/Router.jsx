@@ -3,6 +3,7 @@ import App from "../App";
 import Register from "../auth/register";
 import NavBar from "../NavBar";
 import Login from '../auth/login';
+import { Products } from "../dashboard/products";
 import VerifyUser from "../auth/verify";
 
 const router = createBrowserRouter([
@@ -52,7 +53,16 @@ const router = createBrowserRouter([
       <VerifyUser />
     </div>
   )
-}
+  },
+  {
+  path: "/products",
+  element: (
+    <div>
+      < NavBar />
+      <Products />
+    </div>
+  )
+  }
 ]);
 
 export default router;
