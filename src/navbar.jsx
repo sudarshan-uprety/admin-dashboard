@@ -7,7 +7,6 @@ import { Outlet } from "react-router-dom";
 
 function NavBar() {
   return (
-      <div className="flex h-screen w-screen">
         <div className="h-screen shadow-lg w-2/12 text-sm pt-6 bg-gray-100 ">
           <img src="../public/logo.png" alt="Logo" />
           <ul className="grid gap-12 p-4">
@@ -33,10 +32,6 @@ function NavBar() {
             </p>
           </ul>
         </div>
-        <div className=" h-screen w-screen">
-          <Outlet />
-        </div>
-      </div>
   );
 }
 

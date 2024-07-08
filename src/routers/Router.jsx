@@ -3,16 +3,15 @@ import App from "../App";
 import Register from "../auth/register";
 import NavBar from "../NavBar";
 import Login from '../auth/login';
-import { Products } from "../dashboard/products";
 import VerifyUser from "../auth/verify";
+import Dashboard from "../dashboard";
+import Products from "../products/Products";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <div>
-        <NavBar />
-      </div>
+      <Dashboard />
     ),
   },
   {
@@ -57,11 +56,8 @@ const router = createBrowserRouter([
   {
   path: "/products",
   element: (
-    <div>
-      < NavBar />
       <Products />
-    </div>
-  )
+  ),
   }
 ]);
 
