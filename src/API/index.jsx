@@ -37,3 +37,14 @@ export const verifyAccountAPI = async (params) => {
     toast.error(e.response.data.message);
   }
 };
+
+export const productsAPI = async () => {
+  try {
+    const data = await AXIOS.get("/get/products");
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};

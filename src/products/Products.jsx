@@ -1,8 +1,20 @@
 import React from "react";
 import NavBar from "../NavBar";
 import ProductCard from "../componenets/ProductCard";
+import { productsAPI } from "../API";
+import { useEffect } from "react";
+import { useState } from "react";
 
 export default function Products() {
+  const [productData, setProductData] = useState();
+  async function getData() {
+    const data = await productsAPI();
+    setProductData(data);
+  }
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <ProductCard
       name="Sudarshan"
