@@ -9,19 +9,29 @@ export default function Products() {
   const [productData, setProductData] = useState();
   async function getData() {
     const data = await productsAPI();
-    setProductData(data);
+    setProductData(data.data.data.data);
   }
   useEffect(() => {
     getData();
   }, []);
 
+  console.log(productData);
+
   return (
-    <ProductCard
-      name="Sudarshan"
-      description="This is description"
-      price="120"
-      image="https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-      category="Cloths"
-    />
+    <div>
+      <h1>Product List</h1>
+      {productData?.length > 0 &&
+        productData.map((product) => {
+          return (
+            <ProductCard
+              name={product.name}
+              description={product.description}
+              price={product.price}
+              image={product.image}
+              category={product.category.name}
+            />
+          );
+        })}
+    </div>
   );
 }
