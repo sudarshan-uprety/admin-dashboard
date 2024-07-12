@@ -20,18 +20,20 @@ export default function Products() {
   return (
     <div>
       <h1>Product List</h1>
-      {productData?.length > 0 &&
-        productData.map((product) => {
-          return (
-            <ProductCard
-              name={product.name}
-              description={product.description}
-              price={product.price}
-              image={product.image}
-              category={product.category.name}
-            />
-          );
-        })}
+      <div className="grid grid-cols-5 w-full justify-between gap-12">
+        {productData?.length > 0 &&
+          productData.map((product) => {
+            return (
+              <ProductCard
+                name={product.name}
+                description={product.description}
+                price={product.price}
+                image={product.image}
+                category={product.category.name}
+              />
+            );
+          })}
+      </div>
     </div>
   );
 }
