@@ -38,9 +38,9 @@ export const verifyAccountAPI = async (params) => {
   }
 };
 
-export const productsAPI = async () => {
+export const productsAPI = async (page) => {
   try {
-    const data = await AXIOS.get("/get/products");
+    const data = await AXIOS.get(`/get/products${page ? "?page=" + page : ""}`);
     if (data.status === 200) {
       return data;
     }
