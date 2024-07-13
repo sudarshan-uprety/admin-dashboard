@@ -51,7 +51,18 @@ export const productsAPI = async (page) => {
 
 export const productDetailAPI = async (id) => {
   try {
-    const data = await AXIOS.get("/get/product/}" + id);
+    const data = await AXIOS.get("/get/product/" + id);
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};
+
+export const categoryAPI = async () => {
+  try {
+    const data = await AXIOS.get("/get/categories");
     if (data.status === 200) {
       return data;
     }

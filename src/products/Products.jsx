@@ -35,8 +35,6 @@ export default function Products() {
     });
   };
 
-  const productDetails = (id) => {};
-
   return (
     <div className="w-full">
       <h1>Product List</h1>
@@ -45,6 +43,7 @@ export default function Products() {
           productData.map((product) => {
             return (
               <ProductCard
+                id={product?.id}
                 name={product?.name}
                 description={product?.description}
                 price={product?.price}
