@@ -38,9 +38,31 @@ export const verifyAccountAPI = async (params) => {
   }
 };
 
-export const productsAPI = async () => {
+export const productsAPI = async (page) => {
   try {
-    const data = await AXIOS.get("/get/products");
+    const data = await AXIOS.get(`/get/products${page ? "?page=" + page : ""}`);
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};
+
+export const productDetailAPI = async (id) => {
+  try {
+    const data = await AXIOS.get("/get/product/" + id);
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};
+
+export const categoryAPI = async () => {
+  try {
+    const data = await AXIOS.get("/get/categories");
     if (data.status === 200) {
       return data;
     }
