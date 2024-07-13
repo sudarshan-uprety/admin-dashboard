@@ -48,3 +48,14 @@ export const productsAPI = async (page) => {
     toast.error(e.response.data.message);
   }
 };
+
+export const productDetailAPI = async (id) => {
+  try {
+    const data = await AXIOS.get("/get/product/}" + id);
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};

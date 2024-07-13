@@ -35,6 +35,8 @@ export default function Products() {
     });
   };
 
+  const productDetails = (id) => {};
+
   return (
     <div className="w-full">
       <h1>Product List</h1>

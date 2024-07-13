@@ -6,11 +6,26 @@ import Login from "../auth/login";
 import VerifyUser from "../auth/verify";
 import Dashboard from "../dashboard";
 import Products from "../products/Products";
+import ProductDetails from "../products/ProductDetail";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Dashboard />,
+    children: [
+      {
+        index: true,
+        element: <Products />,
+      },
+      {
+        path: "/products",
+        element: <Products />,
+      },
+      {
+        path: "/product/:id",
+        element: <ProductDetails />,
+      },
+    ],
   },
   {
     path: "about",
@@ -53,6 +68,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/products",
+    element: <Products />,
+  },
+  {
+    path: "/products/:id",
     element: <Products />,
   },
 ]);
