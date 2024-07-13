@@ -1,9 +1,15 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { productDetailAPI } from "../API";
+import { useState } from "react";
 
 export default function productDetails() {
   const { id } = useParams();
+
+  const [category, setCategory] = useState();
+  const [type, setType] = useState();
+  const [color, setColor] = useState();
+  const [size, setSize] = useState();
 
   const getData = async () => {
     const data = await productDetailAPI(id);
