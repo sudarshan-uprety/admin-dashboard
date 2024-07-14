@@ -1,18 +1,38 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { productDetailAPI } from "../API";
+import {
+  productDetailAPI,
+  categoryAPI,
+  sizeAPI,
+  typeAPI,
+  colorAPI,
+} from "../API";
 import { useState, useEffect } from "react";
 
 export default function productDetails() {
   const { id } = useParams();
 
-  const [category, setCategory] = useState();
-  const [type, setType] = useState();
-  const [color, setColor] = useState();
-  const [size, setSize] = useState();
+  const [productData, setProductData] = useState();
+  const [category, setCategory] = useState([]);
+  const [type, setType] = useState([]);
+  const [color, setColor] = useState([]);
+  const [size, setSize] = useState([]);
 
   const getData = async () => {
-    const data = await productDetailAPI(id);
+    const productData = await productDetailAPI(id);
+    setProductData(productData.data.data.data);
+
+    const categoryData = await categoryAPI();
+    setCategory(categoryData.data.data.data);
+
+    const colorData = await colorAPI();
+    setColor(colorData.data.data.data);
+
+    const sizeData = await sizeAPI();
+    setSize(sizeData.data.data.data);
+
+    const typeData = await typeAPI();
+    setType(typeData.data.data.data);
   };
 
   useEffect(() => {
@@ -26,7 +46,7 @@ export default function productDetails() {
           <div className="flex gap-4 w-full">
             <div className="grid w-full">
               <label className="text-sm" htmlFor="name">
-                Store Name
+                Product Name
               </label>
               <input
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
@@ -34,120 +54,112 @@ export default function productDetails() {
                 required
                 id="name"
                 name="name"
-                placeholder="Store Name"
+                placeholder="Product Name"
               />
             </div>
             <div className="grid w-full">
-              <label className="text-sm" htmlFor="username">
-                Username
+              <label className="text-sm" htmlFor="price">
+                Price
               </label>
               <input
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
                 type="text"
                 required
-                id="username"
-                name="username"
-                placeholder="Username"
+                id="price"
+                name="price"
+                placeholder="Price"
               />
             </div>
           </div>
           <div className="flex gap-4 w-full">
             <div className="grid w-full">
-              <label className="text-sm" htmlFor="phone">
-                Phone
+              <label className="text-sm" htmlFor="name">
+                Category
               </label>
-              <input
+              <select
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                type="text"
-                required
-                id="phone"
-                name="phone"
-                placeholder="Phone Number"
-              />
+                name="cars"
+                id="cars"
+              >
+                {category.length > 0 &&
+                  category.map((cat) => {
+                    return <option value={cat.id}>{cat.name}</option>;
+                  })}
+              </select>
             </div>
             <div className="grid w-full">
-              <label className="text-sm" htmlFor="email">
-                Email
+              <label className="text-sm" htmlFor="price">
+                Size
               </label>
-              <input
-                className="px-2 py-1 h-10 w-full rounded-lg  bg-gray-100 mt-3"
-                type="email"
-                required
-                id="email"
-                name="email"
-                placeholder="Email"
-              />
+              <select
+                className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
+                name="cars"
+                id="cars"
+              >
+                {size.length > 0 &&
+                  size.map((s) => {
+                    return <option value={s.id}>{s.name}</option>;
+                  })}
+              </select>
             </div>
           </div>
           <div className="flex gap-4 w-full">
             <div className="grid w-full">
-              <label className="text-sm" htmlFor="password">
-                Password
+              <label className="text-sm" htmlFor="name">
+                Type
               </label>
-              <input
+              <select
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                type="password"
-                required
-                id="password"
-                name="password"
-                placeholder="Password"
-              />
+                name="cars"
+                id="cars"
+              >
+                {type.length > 0 &&
+                  type.map((t) => {
+                    return <option value={t.id}>{t.name}</option>;
+                  })}
+              </select>
             </div>
             <div className="grid w-full">
-              <label className="text-sm" htmlFor="confirm_password">
-                Confirm Password
+              <label className="text-sm" htmlFor="price">
+                Color
               </label>
-              <input
+              <select
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                type="password"
-                required
-                id="confirm_password"
-                name="confirm_password"
-                placeholder="Confirm Password"
-              />
+                name="cars"
+                id="cars"
+              >
+                {color.length > 0 &&
+                  color.map((c) => {
+                    return <option value={c.id}>{c.name}</option>;
+                  })}
+              </select>
             </div>
           </div>
           <div className="flex gap-4 w-full">
             <div className="grid w-full">
-              <label className="text-sm" htmlFor="address">
-                Address
+              <label className="text-sm" htmlFor="stock">
+                Quantity
               </label>
               <input
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                type="text"
+                type="number"
                 required
-                id="address"
-                name="address"
-                placeholder="Address"
+                id="stock"
+                name="stock"
+                placeholder="Quantity"
               />
             </div>
             <div className="grid w-full">
-              <label className="text-sm" htmlFor="state">
-                State
+              <label className="text-sm" htmlFor="stock">
+                Status
               </label>
-              <input
-                className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                type="text"
-                required
-                id="state"
-                name="state"
-                placeholder="State"
-              />
-            </div>
-            <div className="grid w-full">
-              <label className="text-sm" htmlFor="city">
-                City
+              <label className="inline-flex items-center cursor-pointer">
+                <input type="checkbox" value="" className="sr-only peer" />
+                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
               </label>
-              <input
-                className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                type="text"
-                required
-                id="city"
-                name="city"
-                placeholder="City"
-              />
             </div>
           </div>
+
           <div className="flex gap-2 items-center justify-center mt-6">
             <button
               className="px-6 py-2 text-lg rounded-lg bg-gray-600 text-white hover:bg-gray-700"
