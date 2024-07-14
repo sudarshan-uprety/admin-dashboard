@@ -20,7 +20,7 @@ export default function productDetails() {
 
   const getData = async () => {
     const productData = await productDetailAPI(id);
-    setProductData(productData.data.data.data);
+    setProductData(productData.data.data);
 
     const categoryData = await categoryAPI();
     setCategory(categoryData.data.data.data);
@@ -55,6 +55,7 @@ export default function productDetails() {
                 id="name"
                 name="name"
                 placeholder="Product Name"
+                value={productData && productData.name}
               />
             </div>
             <div className="grid w-full">
@@ -68,6 +69,7 @@ export default function productDetails() {
                 id="price"
                 name="price"
                 placeholder="Price"
+                value={productData && productData.price}
               />
             </div>
           </div>
@@ -81,9 +83,20 @@ export default function productDetails() {
                 name="cars"
                 id="cars"
               >
+                <option>Select category</option>
                 {category.length > 0 &&
                   category.map((cat) => {
-                    return <option value={cat.id}>{cat.name}</option>;
+                    return (
+                      <option
+                        value={cat.id}
+                        selected={
+                          productData?.category?.id &&
+                          productData.category.id === cat.id
+                        }
+                      >
+                        {cat.name}
+                      </option>
+                    );
                   })}
               </select>
             </div>
@@ -93,12 +106,22 @@ export default function productDetails() {
               </label>
               <select
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                name="cars"
-                id="cars"
+                name="size"
+                id="size"
               >
+                <option>Select size</option>
                 {size.length > 0 &&
                   size.map((s) => {
-                    return <option value={s.id}>{s.name}</option>;
+                    return (
+                      <option
+                        value={s.id}
+                        selected={
+                          productData?.size?.id && productData.size.id === s.id
+                        }
+                      >
+                        {s.name}
+                      </option>
+                    );
                   })}
               </select>
             </div>
@@ -110,12 +133,22 @@ export default function productDetails() {
               </label>
               <select
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                name="cars"
-                id="cars"
+                name="type"
+                id="type"
               >
+                <option>Select type</option>
                 {type.length > 0 &&
                   type.map((t) => {
-                    return <option value={t.id}>{t.name}</option>;
+                    return (
+                      <option
+                        value={t.id}
+                        selected={
+                          productData?.type?.id && productData.type.id === t.id
+                        }
+                      >
+                        {t.name}
+                      </option>
+                    );
                   })}
               </select>
             </div>
@@ -128,9 +161,20 @@ export default function productDetails() {
                 name="cars"
                 id="cars"
               >
+                <option>Select color</option>
                 {color.length > 0 &&
                   color.map((c) => {
-                    return <option value={c.id}>{c.name}</option>;
+                    return (
+                      <option
+                        value={c.id}
+                        selected={
+                          productData?.color?.id &&
+                          productData.color.id === c.id
+                        }
+                      >
+                        {c.name}
+                      </option>
+                    );
                   })}
               </select>
             </div>
@@ -147,6 +191,7 @@ export default function productDetails() {
                 id="stock"
                 name="stock"
                 placeholder="Quantity"
+                value={productData && productData.stock}
               />
             </div>
             <div className="grid w-full">
