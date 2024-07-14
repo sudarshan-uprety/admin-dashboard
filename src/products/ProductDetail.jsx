@@ -12,37 +12,76 @@ import { useState, useEffect } from "react";
 export default function productDetails() {
   const { id } = useParams();
 
-  const [productData, setProductData] = useState();
-  const [category, setCategory] = useState([]);
-  const [type, setType] = useState([]);
-  const [color, setColor] = useState([]);
-  const [size, setSize] = useState([]);
+  const [productData, setProductData] = useState({});
+
+  const [formDetails, setFormDetails] = useState({
+    name: "",
+    price: "",
+    quantity: "",
+    category: "",
+    size: "",
+    type: "",
+    color: "",
+    status: "",
+    category: "",
+  });
+
+  const [subData, setSubData] = useState({
+    category: [],
+    size: [],
+    type: [],
+    color: [],
+  });
+
+  const handleFormFieldChange = (event) => {
+    setFormDetails({
+        event.target.name: event.target.value,
+    })
+  }
 
   const getData = async () => {
     const productData = await productDetailAPI(id);
-    setProductData(productData.data.data);
-
+    setProductData(productData);
     const categoryData = await categoryAPI();
-    setCategory(categoryData.data.data.data);
-
     const colorData = await colorAPI();
-    setColor(colorData.data.data.data);
-
     const sizeData = await sizeAPI();
-    setSize(sizeData.data.data.data);
-
     const typeData = await typeAPI();
-    setType(typeData.data.data.data);
+
+    setSubData({
+      category: categoryData.data.data.data,
+      size: sizeData.data.data.data,
+      color: colorData.data.data.data,
+      type: typeData.data.data.data,
+    });
+
+    setFormDetails({
+      category: productData.category,
+      color: colorData.data.data.data,
+      name: productData.data.data.name,
+      price: productData.data.data.price,
+      quantity: productData.data.data.quantity,
+      size: sizeData.data.data.data,
+      status: true,
+      type: typeData.data.data.data,
+    });
   };
 
   useEffect(() => {
     getData();
   }, []);
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target.values);
+  };
+
   return (
     <div className="w-screen h-screen grid place-items-center ">
       <div className="px-8 py-8 border-solid rounded-lg shadow-2xl h-full w-full">
-        <form className="flex flex-col gap-4 w-full h-full mt-10 px-16 pb-6">
+        <form
+          className="flex flex-col gap-4 w-full h-full mt-10 px-16 pb-6"
+          // onSubmit={handleSubmit}
+        >
           <div className="flex gap-4 w-full">
             <div className="grid w-full">
               <label className="text-sm" htmlFor="name">
@@ -55,7 +94,8 @@ export default function productDetails() {
                 id="name"
                 name="name"
                 placeholder="Product Name"
-                value={productData && productData.name}
+                onChange={handleFormFieldChange}
+                value={formDetails.name || ""}
               />
             </div>
             <div className="grid w-full">
@@ -69,7 +109,8 @@ export default function productDetails() {
                 id="price"
                 name="price"
                 placeholder="Price"
-                value={productData && productData.price}
+                // onChange={handlePriceChange}
+                value={formDetails.price || ""}
               />
             </div>
           </div>
@@ -80,20 +121,16 @@ export default function productDetails() {
               </label>
               <select
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                name="cars"
-                id="cars"
+                name="category"
+                id="category"
+                value={formDetails?.category}
+                // onChange={handleCategoryChange}
               >
                 <option>Select category</option>
-                {category.length > 0 &&
-                  category.map((cat) => {
+                {subData?.category?.length > 0 &&
+                  subData?.category?.map((cat) => {
                     return (
-                      <option
-                        value={cat.id}
-                        selected={
-                          productData?.category?.id &&
-                          productData.category.id === cat.id
-                        }
-                      >
+                      <option key={cat.id} value={cat.id}>
                         {cat.name}
                       </option>
                     );
@@ -108,17 +145,14 @@ export default function productDetails() {
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
                 name="size"
                 id="size"
+                value={productData?.size?.id}
+                // onChange={handleSizeChange}
               >
                 <option>Select size</option>
-                {size.length > 0 &&
-                  size.map((s) => {
+                {subData?.size.length > 0 &&
+                  subData?.size.map((s) => {
                     return (
-                      <option
-                        value={s.id}
-                        selected={
-                          productData?.size?.id && productData.size.id === s.id
-                        }
-                      >
+                      <option key={s.id} value={s.id}>
                         {s.name}
                       </option>
                     );
@@ -135,17 +169,14 @@ export default function productDetails() {
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
                 name="type"
                 id="type"
+                value={productData?.type?.id}
+                // onChange={handleTypeChange}
               >
                 <option>Select type</option>
-                {type.length > 0 &&
-                  type.map((t) => {
+                {subData?.type.length > 0 &&
+                  subData?.type.map((t) => {
                     return (
-                      <option
-                        value={t.id}
-                        selected={
-                          productData?.type?.id && productData.type.id === t.id
-                        }
-                      >
+                      <option key={t.id} value={t.id}>
                         {t.name}
                       </option>
                     );
@@ -158,20 +189,16 @@ export default function productDetails() {
               </label>
               <select
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
-                name="cars"
-                id="cars"
+                name="color"
+                id="color"
+                value={productData?.color?.id}
+                // onChange={handleColorChange}
               >
                 <option>Select color</option>
-                {color.length > 0 &&
-                  color.map((c) => {
+                {subData?.color.length > 0 &&
+                  subData?.color.map((c) => {
                     return (
-                      <option
-                        value={c.id}
-                        selected={
-                          productData?.color?.id &&
-                          productData.color.id === c.id
-                        }
-                      >
+                      <option key={c.id} value={c.id}>
                         {c.name}
                       </option>
                     );
@@ -185,21 +212,36 @@ export default function productDetails() {
                 Quantity
               </label>
               <input
-                className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
+                className="px-2 py-1 h-10 w-60 rounded-lg bg-gray-100 mt-3"
                 type="number"
                 required
                 id="stock"
                 name="stock"
                 placeholder="Quantity"
-                value={productData && productData.stock}
+                // onChange={handleQuantityChange}
+                value={formDetails.quantity}
               />
             </div>
-            <div className="grid w-full">
+          </div>
+          <div className="flex gap-4 w-full">
+            <div className="grid w-5">
               <label className="text-sm" htmlFor="stock">
                 Status
               </label>
               <label className="inline-flex items-center cursor-pointer">
-                <input type="checkbox" value="" className="sr-only peer" />
+                <input
+                  type="checkbox"
+                  name="status"
+                  id="status"
+                  // checked={
+                  //   selectedStatus !== undefined
+                  //     ? selectedStatus
+                  //     : !!productData?.status
+                  // }
+                  value={productData?.status}
+                  // onChange={handleStatusChange}
+                  className="sr-only peer"
+                />
                 <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
               </label>
             </div>
