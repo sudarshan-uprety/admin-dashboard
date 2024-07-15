@@ -70,3 +70,36 @@ export const categoryAPI = async () => {
     toast.error(e.response.data.message);
   }
 };
+
+export const typeAPI = async () => {
+  try {
+    const data = await AXIOS.get("/get/types");
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};
+
+export const sizeAPI = async () => {
+  try {
+    const data = await AXIOS.get("/get/sizes");
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};
+
+export const colorAPI = async () => {
+  try {
+    const data = await AXIOS.get("/get/colors");
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};
