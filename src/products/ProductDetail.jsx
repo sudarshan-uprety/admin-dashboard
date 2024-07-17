@@ -6,24 +6,25 @@ import {
   sizeAPI,
   typeAPI,
   colorAPI,
+  updateProductAPI,
 } from "../API";
 import { useState, useEffect } from "react";
 
 export default function productDetails() {
   const { id } = useParams();
 
-  const [productData, setProductData] = useState({});
-
   const [formDetails, setFormDetails] = useState({
     name: "",
     price: "",
-    quantity: "",
+    stock: "",
+    image: "",
     category: "",
     size: "",
     type: "",
     color: "",
     status: "",
     category: "",
+    description: "",
   });
 
   const [subData, setSubData] = useState({
@@ -34,14 +35,15 @@ export default function productDetails() {
   });
 
   const handleFormFieldChange = (event) => {
-    setFormDetails({
-        event.target.name: event.target.value,
-    })
-  }
+    const { name, value, type, checked } = event.target;
+    setFormDetails((prevState) => ({
+      ...prevState,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   const getData = async () => {
     const productData = await productDetailAPI(id);
-    setProductData(productData);
     const categoryData = await categoryAPI();
     const colorData = await colorAPI();
     const sizeData = await sizeAPI();
@@ -55,15 +57,25 @@ export default function productDetails() {
     });
 
     setFormDetails({
-      category: productData.category,
-      color: colorData.data.data.data,
-      name: productData.data.data.name,
-      price: productData.data.data.price,
-      quantity: productData.data.data.quantity,
-      size: sizeData.data.data.data,
-      status: true,
-      type: typeData.data.data.data,
+      category: productData?.data?.data?.category?.id,
+      color: productData?.data?.data?.color?.id,
+      name: productData?.data?.data?.name,
+      image: productData?.data?.data?.image,
+      description: productData?.data?.data?.description,
+      price: productData?.data?.data?.price,
+      stock: productData?.data?.data?.stock,
+      size: productData?.data?.data?.size?.id,
+      status: productData?.data?.data?.status,
+      type: productData?.data?.data?.type?.id,
     });
+  };
+
+  const handleImageChange = (event) => {
+    const url = URL.createObjectURL(event.target.files[0]);
+    setFormDetails((prevState) => ({
+      ...prevState,
+      image: url,
+    }));
   };
 
   useEffect(() => {
@@ -72,7 +84,12 @@ export default function productDetails() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData(event.target.values);
+    const formData = new FormData(event.target);
+    console.log("cat id is", formData.get("type"));
+    const data = await updateProductAPI(formData);
+    if (data.status === 200) {
+      console.log("submitted");
+    }
   };
 
   return (
@@ -80,7 +97,7 @@ export default function productDetails() {
       <div className="px-8 py-8 border-solid rounded-lg shadow-2xl h-full w-full">
         <form
           className="flex flex-col gap-4 w-full h-full mt-10 px-16 pb-6"
-          // onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
         >
           <div className="flex gap-4 w-full">
             <div className="grid w-full">
@@ -109,7 +126,7 @@ export default function productDetails() {
                 id="price"
                 name="price"
                 placeholder="Price"
-                // onChange={handlePriceChange}
+                onChange={handleFormFieldChange}
                 value={formDetails.price || ""}
               />
             </div>
@@ -124,7 +141,7 @@ export default function productDetails() {
                 name="category"
                 id="category"
                 value={formDetails?.category}
-                // onChange={handleCategoryChange}
+                onChange={handleFormFieldChange}
               >
                 <option>Select category</option>
                 {subData?.category?.length > 0 &&
@@ -145,8 +162,8 @@ export default function productDetails() {
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
                 name="size"
                 id="size"
-                value={productData?.size?.id}
-                // onChange={handleSizeChange}
+                value={formDetails?.size}
+                onChange={handleFormFieldChange}
               >
                 <option>Select size</option>
                 {subData?.size.length > 0 &&
@@ -169,8 +186,8 @@ export default function productDetails() {
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
                 name="type"
                 id="type"
-                value={productData?.type?.id}
-                // onChange={handleTypeChange}
+                value={formDetails?.type}
+                onChange={handleFormFieldChange}
               >
                 <option>Select type</option>
                 {subData?.type.length > 0 &&
@@ -191,8 +208,8 @@ export default function productDetails() {
                 className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
                 name="color"
                 id="color"
-                value={productData?.color?.id}
-                // onChange={handleColorChange}
+                value={formDetails?.color}
+                onChange={handleFormFieldChange}
               >
                 <option>Select color</option>
                 {subData?.color.length > 0 &&
@@ -212,19 +229,17 @@ export default function productDetails() {
                 Quantity
               </label>
               <input
-                className="px-2 py-1 h-10 w-60 rounded-lg bg-gray-100 mt-3"
+                className="px-2 py-1 h-10 w-full rounded-lg bg-gray-100 mt-3"
                 type="number"
                 required
                 id="stock"
                 name="stock"
                 placeholder="Quantity"
-                // onChange={handleQuantityChange}
-                value={formDetails.quantity}
+                onChange={handleFormFieldChange}
+                value={formDetails.stock || ""}
               />
             </div>
-          </div>
-          <div className="flex gap-4 w-full">
-            <div className="grid w-5">
+            <div className="grid w-full justify-center">
               <label className="text-sm" htmlFor="stock">
                 Status
               </label>
@@ -233,17 +248,45 @@ export default function productDetails() {
                   type="checkbox"
                   name="status"
                   id="status"
-                  // checked={
-                  //   selectedStatus !== undefined
-                  //     ? selectedStatus
-                  //     : !!productData?.status
-                  // }
-                  value={productData?.status}
-                  // onChange={handleStatusChange}
+                  checked={formDetails.status}
+                  value={formDetails.status}
+                  onChange={handleFormFieldChange}
                   className="sr-only peer"
                 />
                 <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
               </label>
+            </div>
+          </div>
+          <div className="flex gap-4 w-full">
+            <div className="grid w-full">
+              <label className="text-sm" htmlFor="description">
+                Description
+              </label>
+              <textarea
+                className="px-2 py-1 h-[400px] w-full rounded-lg bg-gray-100 mt-3"
+                name="description"
+                id="description"
+                placeholder="Description"
+                onChange={handleFormFieldChange}
+                value={formDetails.description || ""}
+              />
+            </div>
+            <div className="grid w-full">
+              <div className="grid place-items-center">
+                <label className="text-sm" htmlFor="price">
+                  image
+                </label>
+                <img
+                  className="h-[400px] w-full"
+                  src={formDetails.image}
+                  alt=""
+                />
+                <input
+                  onChange={handleImageChange}
+                  className="mt-4"
+                  type="file"
+                />
+              </div>
             </div>
           </div>
 
