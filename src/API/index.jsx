@@ -103,3 +103,14 @@ export const colorAPI = async () => {
     toast.error(e.response.data.message);
   }
 };
+
+export const updateProductAPI = async (id) => {
+  try {
+    const data = await AXIOS.put("/update/product/" + id);
+    if (data.status === 200) {
+      return data;
+    }
+  } catch (e) {
+    toast.error(e.response.data.message);
+  }
+};
