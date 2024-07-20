@@ -88,16 +88,16 @@ jobs:
           switches: -avzr --delete
           path: ./
           remote_path: /home/ubuntu/"${{ env.APP_NAME }}"/
-          remote_host: ${{ env.HOST_DNS }}
-          remote_user: ${{ env.HOST_USERNAME }}
-          remote_key: ${{ env.HOST_SSH_KEY }}
+          remote_host: ${{ secrets.HOST_DNS }}
+          remote_user: ${{ secrets.HOST_USERNAME }}
+          remote_key: ${{ secrets.HOST_SSH_KEY }}
 
       - name: Start pm2 using ssh
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.HOST_DNS }}
-          username: ${{ env.HOST_USERNAME }}
-          key: ${{ env.HOST_SSH_KEY }}
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.HOST_USERNAME }}
+          key: ${{ secrets.HOST_SSH_KEY }}
           script: |
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
