@@ -20,7 +20,6 @@ export default function productDetails() {
     price: "",
     stock: "",
     image: "",
-    category: "",
     size: "",
     type: "",
     color: "",
