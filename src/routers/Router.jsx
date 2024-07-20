@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Register from "../auth/register";
-import NavBar from "../NavBar";
+// import NavBar from "../NavBar";
 import Login from "../auth/login";
 import VerifyUser from "../auth/verify";
 import Dashboard from "../dashboard";
