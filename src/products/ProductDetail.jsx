@@ -13,6 +13,8 @@ import { useState, useEffect } from "react";
 export default function productDetails() {
   const { id } = useParams();
 
+  const [productId, setProductId] = useState();
+
   const [formDetails, setFormDetails] = useState({
     name: "",
     price: "",
@@ -44,6 +46,7 @@ export default function productDetails() {
 
   const getData = async () => {
     const productData = await productDetailAPI(id);
+    setProductId(productData?.data?.data?.id);
     const categoryData = await categoryAPI();
     const colorData = await colorAPI();
     const sizeData = await sizeAPI();
@@ -85,8 +88,7 @@ export default function productDetails() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    console.log("cat id is", formData.get("type"));
-    const data = await updateProductAPI(formData);
+    const data = await updateProductAPI(productId, formData);
     if (data.status === 200) {
       console.log("submitted");
     }

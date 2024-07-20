@@ -1,26 +1,26 @@
 import React from "react";
-import productDetails from "../products/ProductDetail";
-import { Link } from "react-router-dom";
 
 export default function ProductCard({
+  productData,
   id,
   name,
-  description,
   category,
   image,
   price,
+  type,
 }) {
   return (
-    <Link to={"/products/" + id}>
-      <div className="flex-col border-solid rounded-lg shadow-xl">
-        <img src={image} width={200} height={200} alt="Logo" />
-        <h2 className="text-center text-gray-400 mt-5">{category}</h2>
-        <h1 className="font-bold text-center">{name}</h1>
-        <p className="text-[12px] text-center">{description}</p>
-        <p className="text-[15px] text-center font-bold text-blue-500">
-          {price} NRP
-        </p>
-      </div>
-    </Link>
+    <tr className="product-list p-24 m-24">
+      <td className="text-center">
+        {productData.findIndex((p) => p.id === id) + 1}
+      </td>
+      <td className="text-center">{name}</td>
+      <td className="text-center">{price}</td>
+      <td className="text-center">{category}</td>
+      <td className="text-center">{type}</td>
+      <td className="grid place-items-center">
+        <img src={image} width={20} height={20} alt={name} />
+      </td>
+    </tr>
   );
 }
