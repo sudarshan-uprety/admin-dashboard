@@ -105,14 +105,21 @@ export const colorAPI = async () => {
   }
 };
 
-export const updateProductAPI = async (id, params) => {
+export const updateProductAPI = async (id, changedFields) => {
   try {
-    const data = await AXIOS.patch(
+    console.log("id is", id);
+    console.log("changed data is", changedFields);
+    const response = await AXIOS.patch(
       "/update/product/" + id,
-      Object.fromEntries(params)
+      Object.fromEntries(changedFields),
+      {
+        headers: {
+          Authorization: `Bearer ${getIdToken()}`,
+        },
+      }
     );
-    if (data.status === 200) {
-      return data;
+    if (response.status === 200) {
+      return response;
     }
   } catch (e) {
     toast.error(e.response.data.message);
