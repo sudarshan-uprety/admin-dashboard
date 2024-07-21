@@ -109,15 +109,11 @@ export const updateProductAPI = async (id, changedFields) => {
   try {
     console.log("id is", id);
     console.log("changed data is", changedFields);
-    const response = await AXIOS.patch(
-      "/update/product/" + id,
-      Object.fromEntries(changedFields),
-      {
-        headers: {
-          Authorization: `Bearer ${getIdToken()}`,
-        },
-      }
-    );
+    const response = await AXIOS.patch("/update/product/" + id, changedFields, {
+      headers: {
+        Authorization: `Bearer ${getIdToken()}`,
+      },
+    });
     if (response.status === 200) {
       return response;
     }

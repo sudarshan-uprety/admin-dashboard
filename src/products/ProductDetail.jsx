@@ -9,6 +9,7 @@ import {
   updateProductAPI,
 } from "../API";
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function productDetails() {
   const { id } = useParams();
@@ -85,8 +86,25 @@ export default function productDetails() {
 
   const getChangedData = (original, updated) => {
     return Object.keys(updated).reduce((acc, key) => {
-      if (original[key] !== updated[key]) {
-        acc[key] = updated[key];
+      const originalValue = original[key];
+      const updatedValue = updated[key];
+
+      if (
+        typeof originalValue === "object" &&
+        originalValue !== null &&
+        "id" in originalValue
+      ) {
+        if (originalValue.id !== updatedValue) {
+          acc[key] = updatedValue;
+        }
+      } else if (key in original) {
+        if (originalValue !== updatedValue && updatedValue != null) {
+          acc[key] = updatedValue;
+        }
+      } else {
+        if (updatedValue != null) {
+          acc[key] = updatedValue;
+        }
       }
       return acc;
     }, {});
@@ -101,7 +119,7 @@ export default function productDetails() {
         console.log("submitted");
       }
     } else {
-      console.log("No changes detected");
+      toast.error("No field changed.");
     }
   };
 
