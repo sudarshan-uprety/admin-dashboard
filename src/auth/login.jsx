@@ -8,8 +8,14 @@ function Login() {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = await loginAPI(formData);
+    const idToken = data?.data?.data?.id_token;
+    const accessToken = data?.data?.data?.access_token;
+    const refreshToken = data?.data?.data?.refresh_token;
+    localStorage.setItem("id_token", idToken);
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", refreshToken);
     if (data.status === 200) {
-      navigate("/");
+      navigate("/my/products");
     }
   };
   return (

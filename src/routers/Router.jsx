@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Register from "../auth/register";
-import NavBar from "../NavBar";
+// import NavBar from "../NavBar";
 import Login from "../auth/login";
 import VerifyUser from "../auth/verify";
 import Dashboard from "../dashboard";
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
         element: <Products />,
       },
       {
-        path: "/products",
+        path: "/my/products",
         element: <Products />,
       },
       {
@@ -27,21 +27,21 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "about",
-    element: (
-      <div>
-        <h1></h1>
-        <NavBar />
-      </div>
-    ),
-    children: [
-      {
-        path: "test",
-        element: <h1></h1>,
-      },
-    ],
-  },
+  // {
+  //   path: "about",
+  //   element: (
+  //     <div>
+  //       <h1></h1>
+  //       <NavBar />
+  //     </div>
+  //   ),
+  //   children: [
+  //     {
+  //       path: "test",
+  //       element: <h1></h1>,
+  //     },
+  //   ],
+  // },
   {
     path: "/register",
     element: (

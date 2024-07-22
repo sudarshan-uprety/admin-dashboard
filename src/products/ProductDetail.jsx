@@ -9,16 +9,17 @@ import {
   updateProductAPI,
 } from "../API";
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function productDetails() {
   const { id } = useParams();
 
+  const [pData, setData] = useState();
   const [formDetails, setFormDetails] = useState({
     name: "",
     price: "",
     stock: "",
     image: "",
-    category: "",
     size: "",
     type: "",
     color: "",
@@ -44,6 +45,7 @@ export default function productDetails() {
 
   const getData = async () => {
     const productData = await productDetailAPI(id);
+    setData(productData?.data?.data);
     const categoryData = await categoryAPI();
     const colorData = await colorAPI();
     const sizeData = await sizeAPI();
@@ -82,13 +84,42 @@ export default function productDetails() {
     getData();
   }, []);
 
+  const getChangedData = (original, updated) => {
+    return Object.keys(updated).reduce((acc, key) => {
+      const originalValue = original[key];
+      const updatedValue = updated[key];
+
+      if (
+        typeof originalValue === "object" &&
+        originalValue !== null &&
+        "id" in originalValue
+      ) {
+        if (originalValue.id !== updatedValue) {
+          acc[key] = updatedValue;
+        }
+      } else if (key in original) {
+        if (originalValue !== updatedValue && updatedValue != null) {
+          acc[key] = updatedValue;
+        }
+      } else {
+        if (updatedValue != null) {
+          acc[key] = updatedValue;
+        }
+      }
+      return acc;
+    }, {});
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    console.log("cat id is", formData.get("type"));
-    const data = await updateProductAPI(formData);
-    if (data.status === 200) {
-      console.log("submitted");
+    const changedData = getChangedData(pData, formDetails);
+    if (Object.keys(changedData).length > 0) {
+      const response = await updateProductAPI(pData.id, changedData);
+      if (response.status === 200) {
+        console.log("submitted");
+      }
+    } else {
+      toast.error("No field changed.");
     }
   };
 
