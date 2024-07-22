@@ -1,9 +1,9 @@
 const { useEffect, useState } = require("react");
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const ProtectedLayout = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
@@ -14,13 +14,15 @@ const ProtectedLayout = ({ children }) => {
       } catch (error) {
         toast.error(error);
         setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
       }
     };
 
     getUser();
   }, []);
+  const navigate = useNavigate();
+  if (!isAuthenticated) {
+    return navigate("/login");
+  }
   return <>{children}</>;
 };
 
