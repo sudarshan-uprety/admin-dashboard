@@ -1,26 +1,42 @@
 import React from "react";
-import productDetails from "../products/ProductDetail";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductCard({
+  productData,
   id,
   name,
-  description,
   category,
   image,
   price,
+  type,
 }) {
+  const navigate = useNavigate();
+
+  const handleRowClick = () => {
+    navigate(`/products/${id}`);
+  };
   return (
-    <Link to={"/products/" + id}>
-      <div className="flex-col border-solid rounded-lg shadow-xl">
-        <img src={image} width={200} height={200} alt="Logo" />
-        <h2 className="text-center text-gray-400 mt-5">{category}</h2>
-        <h1 className="font-bold text-center">{name}</h1>
-        <p className="text-[12px] text-center">{description}</p>
-        <p className="text-[15px] text-center font-bold text-blue-500">
-          {price} NRP
-        </p>
-      </div>
-    </Link>
+    <tr
+      onClick={handleRowClick}
+      className="h-10 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+    >
+      {" "}
+      <td className="text-center">
+        {productData.findIndex((p) => p.id === id) + 1}
+      </td>
+      <td className="text-center">{name}</td>
+      <td className="text-center">{price}</td>
+      <td className="text-center">{category}</td>
+      <td className="text-center">{type}</td>
+      <td className="grid h-full place-items-center ">
+        <img
+          className="w-[30px] h-[30px] object-cover"
+          src={image}
+          width={50}
+          height={50}
+          alt={name}
+        />
+      </td>
+    </tr>
   );
 }

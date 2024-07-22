@@ -1,0 +1,109 @@
+name: build_main
+
+on:
+  push:
+    branches: ["dev"]
+
+jobs:
+  building-pipeline:
+    name: ${{ github.ref }} building
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [21.5.0]
+
+    steps:
+      - name: Checkout code for deployment
+        uses: actions/checkout@v4
+
+      - name: Use node version ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Setup .env
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            echo "${{ vars.DEV_ENV }}">.env
+          elif [ "${{ github.ref }}" == "refs/heads/uat" ]; then
+            echo "${{ vars.UAT_ENV }}">.env
+          elif [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+            echo "${{ vars.PROD_ENV }}">.env
+          fi
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Set environment variables
+        run: |
+          echo "HOST_PORT=${{ secrets.PORT }}" >> $GITHUB_ENV
+          if [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            echo "HOST_DNS=${{ secrets.DEV_HOST }}" >> $GITHUB_ENV
+            echo "HOST_USERNAME=${{ secrets.DEV_HOST_USERNAME }}" >> $GITHUB_ENV
+            echo "APP_NAME=dashboard_dev" >> $GITHUB_ENV
+            echo "HOST_SSH_KEY<<EOF" >> $GITHUB_ENV
+            echo "${{ secrets.DEV_SSH_KEY }}" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          elif [ "${{ github.ref }}" == "refs/heads/uat" ]; then
+            echo "HOST_DNS=${{ secrets.UAT_HOST }}" >> $GITHUB_ENV
+            echo "HOST_USERNAME=${{ secrets.UAT_HOST_USERNAME }}" >> $GITHUB_ENV
+            echo "APP_NAME=dashboard_uat" >> $GITHUB_ENV
+            echo "HOST_SSH_KEY<<EOF" >> $GITHUB_ENV
+            echo "${{ secrets.UAT_SSH_KEY }}" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          elif [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+            echo "HOST_DNS=${{ secrets.PROD_HOST }}" >> $GITHUB_ENV
+            echo "HOST_USERNAME=${{ secrets.PROD_HOST_USERNAME }}" >> $GITHUB_ENV
+            echo "APP_NAME=dashboard_prod" >> $GITHUB_ENV
+            echo "HOST_SSH_KEY<<EOF" >> $GITHUB_ENV
+            echo "${{ secrets.PROD_SSH_KEY }}" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
+
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@master
+        with:
+          switches: -avzr --delete
+          path: ./
+          remote_path: /home/ubuntu/"${{ env.APP_NAME }}"/
+          remote_host: ${{ secrets.DEV_HOST }}
+          remote_user: ${{ secrets.DEV_HOST_USERNAME }}
+          remote_key: ${{ secrets.HOST_SSH_KEY }}
+
+      - name: Start pm2 using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_HOST_USERNAME }}
+          key: ${{ secrets.HOST_SSH_KEY }}
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            cd /home/ubuntu/"${{ env.APP_NAME }}"/
+            npm install -g pnpm
+            pnpm install
+            pm2 delete "${{ env.APP_NAME }}" || true
+            pm2 start npm --name "${{ env.APP_NAME }}" -- start --port 3000
+            pm2 save
